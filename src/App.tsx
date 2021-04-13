@@ -1,19 +1,24 @@
 import React from 'react';
-import { ThemeProvider } from "styled-components";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Switch } from "react-router-dom";
 import renderRoute from "./route";
 import { Provider } from "react-redux";
 import { rootStore } from "./stores";
-
-const theme = {}
+import ThemeProvider from "./theme";
+import {
+  Layout
+} from "./components";
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider>
       <Provider store={rootStore}>
-        <BrowserRouter>
-          {renderRoute()}
-        </BrowserRouter>
+        <Layout>
+          <BrowserRouter>
+            <Switch>
+              {renderRoute()}
+            </Switch>
+          </BrowserRouter>
+        </Layout>
       </Provider>
     </ThemeProvider>
   );

@@ -26,7 +26,7 @@ const routes: WebRoute[] = [
 
 const renderRoute = () => routes.map(({ path, exact, component: Component }) => {
   if (path) {
-    return <Route path={path} exact={exact || true} component={Component} />
+    return <Route path={path} exact={exact ?? true} component={Component} />
   }
   return <Route component={Component} />
 })
