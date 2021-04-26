@@ -10,17 +10,17 @@ import {
 
 function App() {
   return (
-    <ThemeProvider>
-      <Provider store={rootStore}>
-        <Layout>
-          <BrowserRouter>
+    <Provider store={rootStore}>
+      <ThemeProvider>
+        <BrowserRouter>
+          <Layout>
             <Switch>
               {renderRoute()}
             </Switch>
-          </BrowserRouter>
-        </Layout>
-      </Provider>
-    </ThemeProvider>
+          </Layout>
+        </BrowserRouter>
+      </ThemeProvider>
+    </Provider>
   );
 }
 

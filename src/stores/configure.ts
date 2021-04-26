@@ -1,14 +1,21 @@
 import { configureStore } from "@reduxjs/toolkit";
 import {
-  sessionReducer
+  RoomState,
+  SessionState
 } from ".";
+import sessionReducer from "../stores/sessionStore";
+import roomReducer from "../stores/roomStore";
 
 export interface WebStore {
-  sessionStore: typeof sessionReducer;
+  session: SessionState;
+  room: RoomState;
 }
 
-export default configureStore({
+const store = configureStore({
   reducer: {
-    sessionStore: sessionReducer,
-  },
+    session: sessionReducer,
+    room: roomReducer,
+  }
 })
+
+export default store;

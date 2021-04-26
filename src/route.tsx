@@ -1,34 +1,56 @@
+import React from "react";
 import { Route } from "react-router";
 
 import {
   ErrorPage,
-  HomePage
+  HomePage,
+  ChannelPage,
+  RoomPage,
 } from "./pages"
 
-interface WebRoute {
+
+
+export interface WebRoute {
   path?: string;
   exact?: boolean;
-  component: React.ComponentType,
   authed?: boolean;
 }
 
-const routes: WebRoute[] = [
-  {
-    path: "/",
-    authed: false,
-    component: HomePage,
-  },
-  {
-    authed: false,
-    component: ErrorPage,
-  }
-]
+const routes: Array<WebRoute & {
+  component: React.FC<any>,
+}> = [
+    {
+      path: "/",
+      authed: false,
+      component: HomePage,
+    },
+    {
+      path: "/channel",
+      authed: true,
+      component: ChannelPage,
+    },
+    {
+      path: "/room/:id",
+      authed: true,
+      component: RoomPage,
+    },
+    {
+      authed: false,
+      component: ErrorPage,
+    }
+  ]
 
-const renderRoute = () => routes.map(({ path, exact, component: Component }) => {
-  if (path) {
-    return <Route path={path} exact={exact ?? true} component={Component} />
+const renderRoute = () => routes.map(({ authed, path, exact, component: Component }) => {
+  const route = {
+    authed,
+    path,
+    exact
   }
-  return <Route component={Component} />
+
+  if (path) {
+    return <Route path={path} exact={exact ?? true} render={(props) => <Component {...props} route={route} />} />
+  }
+  return <Route render={(props) => <Component {...props} route={route} />} />
 })
 
 export default renderRoute;

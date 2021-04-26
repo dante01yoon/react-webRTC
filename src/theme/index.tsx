@@ -3,10 +3,6 @@ import { createGlobalStyle, ThemeProvider as GlobalThemeProvider } from "styled-
 import reset from "styled-reset";
 import { Colors, colors } from "./colors";
 
-const GlobalStyles = createGlobalStyle`
-  ${reset};
-`
-
 export interface Theme {
   colors: Colors;
 }
@@ -14,6 +10,21 @@ export interface Theme {
 const theme: Theme = Object.freeze({
   colors,
 })
+
+const GlobalStyles = createGlobalStyle<{ theme: Theme }>`
+  ${reset}
+  
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    background-color: ${({ theme }) => theme.colors.bg_dark}
+  }
+
+  color: ${({ theme }) => theme.colors.primary_text};
+
+`
 
 const ThemeProvider: FC = ({ children }) => {
   return (

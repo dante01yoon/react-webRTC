@@ -1,5 +1,7 @@
 import React, { FC } from "react";
 import styled from "styled-components";
+import Gnb from "../components/gnb";
+
 
 const StyledMain = styled.main`
   display: flex;
@@ -9,9 +11,13 @@ const StyledMain = styled.main`
 
 const Layout: FC = ({ children }) => {
   return (
-    <StyledMain>
-      {children}
-    </StyledMain>
+    <>
+      <Gnb />
+      <StyledMain>
+
+        {children}
+      </StyledMain>
+    </>
   )
 }
 
