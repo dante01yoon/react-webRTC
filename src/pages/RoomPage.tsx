@@ -2,7 +2,7 @@ import React, { FC, useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import useStores from "../utils/useStores";
 import { RouteComponentProps } from "react-router-dom";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { WebStore } from "../stores";
 import { WrapperPage } from ".";
 import { WebRoute } from "../route";
@@ -15,6 +15,7 @@ import {
 } from "../stores/roomStore"
 import VideoBoard from "../components/videoboard";
 import ChatBoard from "../components/chatboard";
+import ControlPanel from "../components/controlPanel";
 import { IAgoraRTCRemoteUser } from "agora-rtc-sdk-ng";
 
 const StyledSection = styled.section`
@@ -24,13 +25,31 @@ const StyledArticle = styled.article`
   display: inline-block;
 `;
 
-const StyledMyProfile = styled.div`
+
+const StyledMainVideoView = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding-right: 20px;
+`;
+
+const profileCSS = css`
+  display: inline-block;
+  background-color: black;
   width: 300px;
   height: calc(250px * 0.75);
+  border-radius: 8px;
 
   * {
     border-radius: 8px;
   }
+`;
+
+const StyledMyProfile = styled.div`
+  ${profileCSS}
+`;
+
+const StyledCallerProfile = styled.div`
+  ${profileCSS}
 `;
 
 const StyledSpeakerCard = styled.div<{
@@ -61,6 +80,7 @@ const RoomPage: FC<RoomPageProps> = ({
   const state = useStores();
   const { session: { profile }, room: { subscribers } } = state;
   const myProfileRef = useRef<HTMLDivElement>(null);
+  const callerProfileRef = useRef<HTMLDivElement>(null);
   const speakersRef = useRef<HTMLDivElement[]>([]);
 
   useEffect(() => {
@@ -127,7 +147,11 @@ const RoomPage: FC<RoomPageProps> = ({
     return (
       <StyledSection>
         <StyledArticle>
-          <StyledMyProfile id="myProfile" ref={myProfileRef} />
+          <StyledMainVideoView>
+            <StyledMyProfile id="myProfile" ref={myProfileRef} />
+            <ControlPanel />
+            <StyledCallerProfile id="callerProfile" ref={callerProfileRef} />
+          </StyledMainVideoView>
           <VideoBoard subscribers={subscribers} />
         </StyledArticle>
         <StyledArticle>
