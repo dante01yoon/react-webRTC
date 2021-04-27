@@ -121,14 +121,9 @@ const RoomPage: FC<RoomPageProps> = ({
   }
 
   const unSubscribeHandler = (user: IAgoraRTCRemoteUser) => {
+    console.log("userin unSubscribeHandler: ", user)
     dispatch(removeSubscribers({
-      payload: {
-        user: {
-          uid: user.uid,
-          // 이름을 어디서 가지고 올까 
-          name: "something",
-        }
-      }
+      uid: user.uid
     }))
   }
 

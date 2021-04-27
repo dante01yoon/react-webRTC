@@ -11,7 +11,7 @@ export interface RTC {
 
 export class AgoraRTCClient {
   rtc: RTC;
-  joined: Map<string, string | number> = new Map();
+  joined: Record<string, UID> = {};
 
   constructor() {
     this.rtc = {
@@ -31,7 +31,7 @@ export class AgoraRTCClient {
     try {
       uid = await this.rtc.client.join(process.env.REACT_APP_ID!, channel, token || null);
       if (!isNil(uid)) {
-        this.joined.set(channel, uid);
+        this.joined[channel] = uid;
       }
     } catch (error) {
       console.error(error);

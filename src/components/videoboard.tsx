@@ -46,9 +46,10 @@ const VideoBoard: FC<VideoBoardProps> = ({
   subscribers,
 }) => {
   const dummy = dummySubscribers();
+  console.log("subscribers: ", subscribers);
   console.log("dummy: ", dummy);
   const renderVideos = () => {
-    return Object.entries(dummy).map(([uid, profile], index) => {
+    return Object.entries(subscribers).map(([uid, profile], index) => {
       if (profile) {
         const { videoTrack, audioTrack } = profile;
         return <StyledVideoCard

@@ -1,4 +1,4 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
 import {
   RoomState,
   SessionState
@@ -11,11 +11,16 @@ export interface WebStore {
   room: RoomState;
 }
 
+const customMiddleware = getDefaultMiddleware({
+  serializableCheck: false
+})
+
 const store = configureStore({
   reducer: {
     session: sessionReducer,
     room: roomReducer,
-  }
+  },
+  middleware: customMiddleware,
 })
 
 export default store;

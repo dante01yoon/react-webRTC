@@ -34,7 +34,7 @@ const roomReducers: ValidateSliceCaseReducers<RoomState, SliceCaseReducers<RoomS
     state.subscribers[userPayload.uid] = userPayload;
   },
   removeSubscribers(state, { payload: { uid: uidPayload } }) {
-    state.subscribers[uidPayload] = null;
+    delete state.subscribers[uidPayload];
   },
 }
 
