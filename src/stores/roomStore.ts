@@ -8,16 +8,23 @@ export interface Profile {
   audioTrack?: IRemoteAudioTrack;
 }
 
+export interface Volume {
+  level: number;
+  uid: UID;
+}
+
 export interface RoomState {
   roomCode: Nullable<string>;
   roomName: Nullable<string>;
   subscribers: Record<UID, Nullable<Profile>>;
+  loudest: Nullable<Volume>,
 }
 
 const initialState: RoomState = {
   roomCode: null,
   roomName: null,
   subscribers: {},
+  loudest: null,
 }
 
 const roomReducers: ValidateSliceCaseReducers<RoomState, SliceCaseReducers<RoomState>> = {
@@ -36,9 +43,16 @@ const roomReducers: ValidateSliceCaseReducers<RoomState, SliceCaseReducers<RoomS
   removeSubscribers(state, { payload: { uid: uidPayload } }) {
     delete state.subscribers[uidPayload];
   },
+  setLoudest(state, { payload: { volume } }: {
+    payload: {
+      volume: Volume
+    }
+  }) {
+    state.loudest = volume;
+  }
 }
 
-export const roomSlice = createSlice({ 
+export const roomSlice = createSlice({
   name: "room",
   initialState,
   reducers: roomReducers,
@@ -50,6 +64,7 @@ export const {
   setSubscribers,
   pushSubscribers,
   removeSubscribers,
+  setLoudest,
 } = roomSlice.actions;
 
 export default roomSlice.reducer;

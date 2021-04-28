@@ -59,8 +59,6 @@ export class AgoraRTCClient {
 
   async publicAudioLocalTrack() {
     this.rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-    console.log("audioStats: ", this.rtc.localAudioTrack.getStats());
-    console.log("currentState: ", this.rtc.localAudioTrack.currentState);
   }
 
   async publicVideoLocalTrack() {
@@ -70,6 +68,15 @@ export class AgoraRTCClient {
 
   async publicVideoLocalTrackSynchronously() {
     this.rtc.localVideoTrack = await AgoraRTC.createMicrophoneAndCameraTracks();
+  }
+
+  enableAudioVolumeIndicator(callback: (result: {
+    level: number;
+    uid: UID;
+  }[]) => void) {
+    const { client } = this.rtc;
+    client.enableAudioVolumeIndicator();
+    client.on("volume-indicator", callback);
   }
 
   subscribe(callback?: (user: IAgoraRTCRemoteUser, mediaType: "audio" | "video") => void) {
