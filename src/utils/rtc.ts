@@ -46,7 +46,10 @@ export class AgoraRTCClient {
         await client.publish([localAudioTrack]);
       }
       else {
-        await client.publish([localVideoTrack, localAudioTrack]);
+        await client.publish(localVideoTrack);
+        if (localAudioTrack) {
+          await client.publish(localAudioTrack);
+        }
       }
       console.log("publish success");
     } catch (error) {
@@ -56,10 +59,13 @@ export class AgoraRTCClient {
 
   async publicAudioLocalTrack() {
     this.rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+    console.log("audioStats: ", this.rtc.localAudioTrack.getStats());
+    console.log("currentState: ", this.rtc.localAudioTrack.currentState);
   }
 
   async publicVideoLocalTrack() {
     this.rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
+    console.log("this.rtc.localVideoTrack: ", this.rtc.localVideoTrack);
   }
 
   async publicVideoLocalTrackSynchronously() {
@@ -74,7 +80,6 @@ export class AgoraRTCClient {
       console.log("subscribe success");
 
       if (callback) {
-        console.log("has callback");
         callback(user, mediaType);
       }
     });
@@ -90,14 +95,11 @@ export class AgoraRTCClient {
 
   playTrack(dom?: string | HTMLElement) {
     return (user: IAgoraRTCRemoteUser, mediaType: "audio" | "video") => {
-      console.log("user, mediaType", console.log(user, mediaType))
       if (mediaType === "audio") {
         const audioTrack = user.audioTrack;
-        console.log("audioTrack: ", audioTrack);
         audioTrack?.play();
       } else {
         const videoTrack = user.videoTrack;
-        console.log("videoTrack: ", videoTrack);
         if (dom) {
           videoTrack?.play(dom);
         }

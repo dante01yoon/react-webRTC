@@ -38,7 +38,7 @@ const roomReducers: ValidateSliceCaseReducers<RoomState, SliceCaseReducers<RoomS
   },
 }
 
-export const roomSlice = createSlice({
+export const roomSlice = createSlice({ 
   name: "room",
   initialState,
   reducers: roomReducers,

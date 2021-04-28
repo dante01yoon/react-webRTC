@@ -79,6 +79,7 @@ const RoomPage: FC<RoomPageProps> = ({
   const { client } = useSelector((state: WebStore) => state.session);
   const state = useStores();
   const { session: { profile }, room: { subscribers } } = state;
+  const [isMute, setMute] = useState(false);
   const myProfileRef = useRef<HTMLDivElement>(null);
   const callerProfileRef = useRef<HTMLDivElement>(null);
   const speakersRef = useRef<HTMLDivElement[]>([]);
@@ -97,6 +98,7 @@ const RoomPage: FC<RoomPageProps> = ({
         await client.publicVideoLocalTrack();
         // 내 영상 실행
         client.rtc.localVideoTrack.play(myProfileRef.current)
+        client.rtc.localAudioTrack.play();
         await client.publish({ mediaType: "video" });
       });
 
@@ -121,7 +123,6 @@ const RoomPage: FC<RoomPageProps> = ({
   }
 
   const unSubscribeHandler = (user: IAgoraRTCRemoteUser) => {
-    console.log("userin unSubscribeHandler: ", user)
     dispatch(removeSubscribers({
       uid: user.uid
     }))
@@ -136,15 +137,13 @@ const RoomPage: FC<RoomPageProps> = ({
     }
   }, []);
 
-  console.log("subscribers: ", subscribers);
-
   const handleRender = () => {
     return (
       <StyledSection>
         <StyledArticle>
           <StyledMainVideoView>
             <StyledMyProfile id="myProfile" ref={myProfileRef} />
-            <ControlPanel />
+            <ControlPanel client={client} />
             <StyledCallerProfile id="callerProfile" ref={callerProfileRef} />
           </StyledMainVideoView>
           <VideoBoard subscribers={subscribers} />

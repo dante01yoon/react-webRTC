@@ -1,5 +1,7 @@
-import Reeact, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import styled, { css } from "styled-components";
+import { AgoraRTCClient } from "../utils/rtc";
+
 import microphone from "../assets/images/microphone.svg";
 import webcam from "../assets/images/webcam.svg";
 
@@ -29,15 +31,48 @@ const StyledVideoMySelf = styled.div`
 `;
 
 interface ControlPanelProps {
-
+  client: AgoraRTCClient | null
 }
 
-const ControlPanel: FC = () => {
+const ControlPanel: FC<ControlPanelProps> = ({
+  client,
+}) => {
+  const handleAudioToggle = async () => {
+    try {
+      if (client?.rtc.localAudioTrack) {
+        if (client?.rtc.localAudioTrack.isPlaying) {
+          client.rtc.localAudioTrack.setVolume(0);
+          client.rtc.localAudioTrack.stop();
+        }
+        else {
+          client.rtc.localAudioTrack.play();
+          client.rtc.localAudioTrack.setVolume(100);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const handleVideoToggle = () => {
+    if (client?.rtc.localVideoTrack) {
+      const { localVideoTrack } = client.rtc;
+
+      if (localVideoTrack.isPlaying) {
+        localVideoTrack.stop();
+      }
+      else {
+        localVideoTrack.play();
+      }
+    }
+  }
+
+
 
   return (
     <StyledWrapper>
-      <StyledMuteMySelf />
-      <StyledVideoMySelf />
+      <StyledMuteMySelf onClick={handleAudioToggle} />
+      <StyledVideoMySelf onClick={handleVideoToggle} />
     </StyledWrapper>
   )
 }
