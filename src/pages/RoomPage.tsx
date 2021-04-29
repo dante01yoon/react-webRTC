@@ -20,6 +20,7 @@ import ChatBoard from "../components/chatboard";
 import ControlPanel from "../components/controlPanel";
 import { IAgoraRTCRemoteUser, UID } from "agora-rtc-sdk-ng";
 import isNil from "lodash/isNil";
+import cloneDeep from "lodash/cloneDeep";
 
 const StyledSection = styled.section`
 `;
@@ -88,6 +89,7 @@ const RoomPage: FC<RoomPageProps> = ({
   const myProfileRef = useRef<HTMLDivElement>(null);
   const callerProfileRef = useRef<HTMLDivElement>(null);
   const loudestRef = useRef(loudest);
+  const subscribersRef = useRef(subscribers);
 
   useEffect(() => {
     dispatch(setRoomCode(id));
@@ -95,8 +97,17 @@ const RoomPage: FC<RoomPageProps> = ({
 
   useEffect(() => {
     loudestRef.current = loudest;
-  }, [loudest]);
+  }, [loudest && loudest.uid]);
 
+  useEffect(() => {
+    subscribersRef.current = subscribers;
+  }, [subscribers])
+
+  // 2초마다 한번씩 실행
+  /**
+   * @see https://docs.agora.io/en/Voice/API%20Reference/web_ng/interfaces/iagorartcclient.html#enableaudiovolumeindicator 
+   * @param volumes
+   */
   const volumeIndicatorCallback = (volumes: Array<{
     level: number;
     uid: UID;
@@ -104,37 +115,29 @@ const RoomPage: FC<RoomPageProps> = ({
     let highestVolume: Nullable<Volume> = loudest;
 
     volumes.forEach((volume, _) => {
-
       const { level, uid } = volume;
       console.log("level: ", level, "uid: ", uid);
+
+      // 초기 loudest값이 null이면 volume 대입 
       if (isNil(highestVolume)) {
         highestVolume = volume;
         dispatch(setLoudest({ volume: highestVolume }));
-        return false;
       }
+      // 제일 큰 볼륨 찾기
       if (highestVolume && highestVolume.level < level && highestVolume.uid !== uid) {
         highestVolume = volume;
       }
     })
-    console.log("highestVolume.uid: ", highestVolume?.uid);
-    console.log("loudestRef.current.uid: ", loudestRef.current?.uid);
-    if (loudest && highestVolume?.uid !== loudestRef.current?.uid) {
-      console.log("callerProfileRef.current:", callerProfileRef.current);
+    // 제일 볼륨이 큰 uid가 현재 볼륨이 가장 큰 사람의 uid와 다르다면
+    if (loudestRef.current && highestVolume && highestVolume.uid !== loudestRef.current.uid) {
       dispatch(setLoudest({ volume: highestVolume }));
-      if (Object.keys(subscribers).length > 0 && callerProfileRef.current) {
-        console.log("before loudest play");
-        console.log("subscribers[loudest.uid]?.videoTrack: ", subscribers[loudest.uid]?.videoTrack);
+      if (Object.keys(subscribersRef.current).length > 0 && callerProfileRef.current) {
         callerProfileRef.current.innerHTML = "";
-        console.log("loudest.uid: ", loudest.uid)
-        subscribers[loudest.uid]?.videoTrack?.play(callerProfileRef.current);
+        const copiedRTC = cloneDeep(subscribersRef.current[highestVolume.uid]);
+        copiedRTC?.videoTrack?.play(callerProfileRef.current);
       }
     }
   }
-
-  useEffect(() => {
-    console.log("subscribers: ", subscribers);
-    console.log("loudest: ", loudest);
-  }, [subscribers, loudest]);
 
   useEffect(() => {
     if (client) {

@@ -6,6 +6,7 @@ import type { Profile, RoomState } from "../stores/roomStore";
 const StyledWrapper = styled.div`
   background-color: ${({ theme }) => theme.colors.board_background};
   position: relative;
+  overflow-y: auto;
   width: 700px;
   border-radius: 8px;
   height: 498px;
@@ -29,7 +30,7 @@ interface VideoBoardProps {
 }
 
 const dummySubscribers = (): RoomState["subscribers"] => {
-  const reduced = new Array(10)
+  const reduced = new Array(20)
     .fill(0)
     .map(() => nanoid(5))
     .reduce((acc: { [key: string]: Profile }, curr) => {
@@ -46,8 +47,6 @@ const VideoBoard: FC<VideoBoardProps> = ({
   subscribers,
 }) => {
   const dummy = dummySubscribers();
-  console.log("subscribers: ", subscribers);
-  console.log("dummy: ", dummy);
   const renderVideos = () => {
     return Object.entries(subscribers).map(([uid, profile], index) => {
       if (profile) {
