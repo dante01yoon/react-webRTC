@@ -30,7 +30,6 @@ const StyledArticle = styled.article`
   vertical-align: bottom;
 `;
 
-
 const StyledMainVideoView = styled.div`
   display: flex;
   justify-content: space-between;
@@ -191,6 +190,10 @@ const RoomPage: FC<RoomPageProps> = ({
     }
   }, []);
 
+  const handleSubmit = () => {
+
+  }
+
   const handleRender = () => {
     return (
       <StyledSection>
@@ -204,7 +207,7 @@ const RoomPage: FC<RoomPageProps> = ({
         </StyledArticle>
         <StyledArticle>
           <StyledChatCardWrapper>
-            <ChatBoard />
+            <ChatBoard onSubmit={handleSubmit} />
           </StyledChatCardWrapper>
         </StyledArticle>
       </StyledSection>

@@ -8,6 +8,11 @@ export interface Profile {
   audioTrack?: IRemoteAudioTrack;
 }
 
+interface Chat {
+  name: Profile["name"];
+  message: string;
+}
+
 export interface Volume {
   level: number;
   uid: UID;
@@ -18,6 +23,7 @@ export interface RoomState {
   roomName: Nullable<string>;
   subscribers: Record<UID, Nullable<Profile>>;
   loudest: Nullable<Volume>,
+  chatMessages: Nullable<Chat[]>,
 }
 
 const initialState: RoomState = {
@@ -25,6 +31,7 @@ const initialState: RoomState = {
   roomName: null,
   subscribers: {},
   loudest: null,
+  chatMessages: null,
 }
 
 const roomReducers: ValidateSliceCaseReducers<RoomState, SliceCaseReducers<RoomState>> = {
@@ -49,6 +56,14 @@ const roomReducers: ValidateSliceCaseReducers<RoomState, SliceCaseReducers<RoomS
     }
   }) {
     state.loudest = volume;
+  },
+  pushChatMessages(state, { payload: { name, message } }) {
+    state.chatMessages = state.chatMessages
+      ? [...state.chatMessages, { name, message }]
+      : [{ name, message }]
+  },
+  setChatMessages(state, { payload }: { payload: RoomState["chatMessages"] }) {
+    state.chatMessages = payload
   }
 }
 
@@ -65,6 +80,8 @@ export const {
   pushSubscribers,
   removeSubscribers,
   setLoudest,
+  pushChatMessages,
+  setChatMessages
 } = roomSlice.actions;
 
 export default roomSlice.reducer;

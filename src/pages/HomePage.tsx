@@ -2,7 +2,8 @@ import React, { FC, useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import styled from "styled-components";
 import { nanoid } from "nanoid";
-import isNil from "lodash/isNil";
+import firebase from "firebase";
+
 import WrapperPage from "./WrapperPage";
 import { WebRoute } from "../route";
 
@@ -32,24 +33,24 @@ interface HomePageProps extends RouteComponentProps {
 }
 
 const HomePage: FC<HomePageProps> = ({ history, route }) => {
-  const [idField, setIdField] = useState("");
+  const [emailField, setEmailField] = useState("");
   const [passwordField, setPasswordField] = useState("");
   const [authState, setAuthState] = useState(() => localStorage.getItem("sampleAuth"));
 
   const handleChangeId = (e: ChangeEvent<HTMLInputElement>) => {
-    setIdField(e.target.value);
+    setEmailField(e.target.value);
   }
 
   const handleChangePassword = (e: ChangeEvent<HTMLInputElement>) => {
     setPasswordField(e.target.value);
   }
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
+    // handleSignIn(emailField, passwordField);
     const sampleToken = nanoid(20);
     localStorage.setItem("sampleAuth", sampleToken);
     setAuthState(sampleToken);
-
   }
 
   useEffect(() => {
@@ -59,8 +60,34 @@ const HomePage: FC<HomePageProps> = ({ history, route }) => {
     }
   }, [authState]);
 
-  const handleRender = () => {
+  const handleSignUp = (email: string, password: string) => {
+    firebase.auth().createUserWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
 
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.error(errorCode);
+        throw Error(errorMessage);
+      })
+  }
+
+  const handleSignIn = (email: string, password: string) => {
+    firebase.auth().signInWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.error(errorCode);
+        throw Error(errorMessage);
+      })
+  }
+
+  const handleRender = () => {
     return (
       <StyledSection>
         <StyledFormWrapper>
@@ -68,7 +95,7 @@ const HomePage: FC<HomePageProps> = ({ history, route }) => {
           <form onSubmit={handleSubmit}>
             <StyledField
               placeholder={"아이디"}
-              value={idField}
+              value={emailField}
               onChange={handleChangeId}
             />
             <StyledField

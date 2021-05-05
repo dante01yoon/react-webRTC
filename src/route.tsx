@@ -6,6 +6,7 @@ import {
   HomePage,
   ChannelPage,
   RoomPage,
+  ChatPage,
 } from "./pages"
 
 
@@ -33,6 +34,11 @@ const routes: Array<WebRoute & {
       path: "/room/:id",
       authed: true,
       component: RoomPage,
+    },
+    {
+      path: "/chat/:id",
+    authed: true,
+      component: ChatPage,
     },
     {
       authed: false,

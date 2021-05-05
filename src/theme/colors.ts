@@ -5,6 +5,7 @@ export interface Colors {
   board_background: string;
   primary_text: string;
   secondary_text: string;
+  white: string;
 }
 
 export const colors: Colors = {
@@ -14,4 +15,5 @@ export const colors: Colors = {
   board_background: "#160c2e",
   primary_text: "#efedf5",
   secondary_text: "#5c5a61",
+  white: "#ffffff",
 }

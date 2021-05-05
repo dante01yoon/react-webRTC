@@ -104,9 +104,6 @@ const ChannelPage: FC<ChannelPageProps> = ({
         <StyledContentsArticle>
           {renderCardList()}
         </StyledContentsArticle>
-        <StyledChatArticle>
-          <ChatBoard />
-        </StyledChatArticle>
       </StyledSection>
     );
   }
